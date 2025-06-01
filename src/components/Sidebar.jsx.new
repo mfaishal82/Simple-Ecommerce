@@ -1,0 +1,120 @@
+import React, { useState, useEffect, useRef } from 'react'
+
+export default function Sidebar({ onSelectCategory, selectedCategory }) {
+  const [categories, setCategories] = useState([])
+  const [isOpen, setIsOpen] = useState(false)
+  const sidebarRef = useRef(null)
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch('https://fakestoreapi.com/products/categories')
+        if (!res.ok) throw new Error('Failed to fetch categories')
+        const data = await res.json()
+        setCategories(['all', ...data])
+      } catch (err) {
+        console.error('Error fetching categories:', err)
+      }
+    }
+    fetchCategories()
+
+    // Close sidebar when clicking outside on mobile
+    function handleClickOutside(event) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden fixed z-50 bottom-4 right-4 bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2"
+        aria-label="Toggle categories"
+      >
+        <span className="text-xl">{isOpen ? '✕' : '📑'}</span>
+        <span className="text-sm font-medium">
+          {isOpen ? 'Close' : 'Categories'}
+        </span>
+      </button>
+
+      {/* Overlay */}
+      {isOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        ref={sidebarRef}
+        className={`
+          fixed lg:sticky 
+          lg:top-4 
+          ${isOpen ? 'top-0' : '-top-full lg:top-4'} 
+          left-0 lg:left-auto
+          w-full lg:w-64 
+          h-auto lg:h-auto 
+          max-h-[80vh] lg:max-h-[calc(100vh-2rem)]
+          overflow-y-auto
+          bg-white 
+          shadow-lg 
+          rounded-none lg:rounded-lg
+          transition-all duration-300 ease-in-out
+          z-50 lg:z-0
+          ${isOpen ? 'translate-y-0' : '-translate-y-full lg:translate-y-0'}
+        `}
+      >
+        {/* Mobile Header */}
+        <div className="lg:hidden flex flex-col p-4 border-b">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl font-bold">Categories</h2>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          </div>
+          <p className="text-sm text-gray-600">
+            Selected: {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
+          </p>
+        </div>
+
+        {/* Categories List */}
+        <div className="p-4">
+          <h2 className="hidden lg:block text-xl font-bold mb-4">Categories</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => {
+                  onSelectCategory(category)
+                  setIsOpen(false)
+                }}
+                className={`
+                  w-full px-3 py-2.5 rounded-lg
+                  text-left text-sm lg:text-base
+                  transition-all duration-200
+                  ${
+                    selectedCategory === category
+                      ? 'bg-blue-600 text-white font-medium shadow-md'
+                      : 'hover:bg-gray-100 text-gray-700'
+                  }
+                `}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}

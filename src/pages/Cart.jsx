@@ -1,7 +1,34 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { showConfirmDelete } from '../utils/alert'
+import Swal from 'sweetalert2'
 
 export default function Cart({ items, onUpdateQuantity, onCheckout }) {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const [selectedPayment, setSelectedPayment] = useState('')
+  
+  const handleCheckout = () => {
+    if (!selectedPayment) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please Select Payment Method',
+        text: 'You need to select a payment method before proceeding to checkout.',
+      })
+      return
+    }
+    onCheckout(selectedPayment)
+  }
+
+  const handleQuantityChange = async (productId, newQuantity) => {
+    if (newQuantity === 0) {
+      const result = await showConfirmDelete()
+      if (result.isConfirmed) {
+        onUpdateQuantity(productId, 0)
+      }
+    } else {
+      onUpdateQuantity(productId, newQuantity)
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -38,31 +65,81 @@ export default function Cart({ items, onUpdateQuantity, onCheckout }) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() =>
-                  onUpdateQuantity(item.id, Math.max(0, item.quantity - 1))
+                  handleQuantityChange(item.id, Math.max(0, item.quantity - 1))
                 }
-                className="px-3 py-1 bg-gray-200 rounded"
+                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
               >
                 -
               </button>
               <span className="w-8 text-center">{item.quantity}</span>
               <button
-                onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                className="px-3 py-1 bg-gray-200 rounded"
+                onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
               >
                 +
               </button>
             </div>
           </div>
         ))}
-        <div className="mt-6 pt-6 border-t">
-          <div className="flex justify-between items-center mb-4">
+        <div className="mt-6 pt-6 border-t">          <div className="flex justify-between items-center mb-4">
             <span className="font-semibold">Total:</span>
             <span className="text-2xl font-bold text-blue-600">
               ${total.toFixed(2)}
             </span>
           </div>
-          <button
-            onClick={onCheckout}
+
+          <div className="mb-4">
+            <h3 className="font-semibold mb-3">Select Payment Method:</h3>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">                <input 
+                  type="radio" 
+                  name="payment" 
+                  value="qris" 
+                  checked={selectedPayment === 'qris'}
+                  onChange={(e) => setSelectedPayment(e.target.value)}
+                  className="text-blue-600" 
+                />
+                <span>QRIS</span>
+                <img src="/qris-icon.png" alt="QRIS" className="h-6 ml-auto" />
+              </label>
+              <label className="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input 
+                  type="radio" 
+                  name="payment" 
+                  value="gopay"
+                  checked={selectedPayment === 'gopay'}
+                  onChange={(e) => setSelectedPayment(e.target.value)}
+                  className="text-blue-600" 
+                />
+                <span>GoPay</span>
+                <img src="/gopay-icon.png" alt="GoPay" className="h-6 ml-auto" />
+              </label>
+              <label className="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input 
+                  type="radio" 
+                  name="payment" 
+                  value="dana"
+                  checked={selectedPayment === 'dana'}
+                  onChange={(e) => setSelectedPayment(e.target.value)}
+                  className="text-blue-600" 
+                />
+                <span>DANA</span>
+                <img src="/dana-icon.png" alt="DANA" className="h-6 ml-auto" />
+              </label>
+              <label className="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input 
+                  type="radio" 
+                  name="payment" 
+                  value="bank-transfer"
+                  checked={selectedPayment === 'bank-transfer'}
+                  onChange={(e) => setSelectedPayment(e.target.value)}
+                  className="text-blue-600" />
+                <span>Bank Transfer</span>
+                <span className="text-sm text-gray-500 ml-auto">BCA, Mandiri, BNI</span>
+              </label>
+            </div>
+          </div>          <button
+            onClick={handleCheckout}
             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Proceed to Checkout

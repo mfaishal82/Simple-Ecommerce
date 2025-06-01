@@ -4,55 +4,62 @@ import Navbar from './components/Navbar'
 import LoginForm from './components/LoginForm'
 import Home from './pages/Home'
 import ProductDetail from './pages/ProductDetail'
+import { showSuccessCheckout, showLoginRequired } from './utils/alert'
 import Cart from './pages/Cart'
 import ProtectedRoute from './components/ProtectedRoute'
 import Modal from './components/Modal'
 import { login } from './services/authService'
 import './App.css'
 
-function App() {  const [token, setToken] = useState(null)
+function App() {
+  const [token, setToken] = useState(() => localStorage.getItem('token'))
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [username, setUsername] = useState('johnd')
   const [password, setPassword] = useState('m38rmF$')
   const [loginError, setLoginError] = useState(null)
   const [loginLoading, setLoginLoading] = useState(false)
-  const [cartItems, setCartItems] = useState([])
-
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem('cartItems')
+    return savedCart ? JSON.parse(savedCart) : []
+  })
   function handleAddToCart(product) {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id)
-      if (existing) {
-        return prev.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      }
-      return [...prev, { ...product, quantity: 1 }]
+      const newCart = existing
+        ? prev.map(item =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        : [...prev, { ...product, quantity: 1 }]
+      
+      // Save to localStorage
+      localStorage.setItem('cartItems', JSON.stringify(newCart))
+      return newCart
     })
   }
-
   function handleUpdateCartQuantity(productId, newQuantity) {
-    if (newQuantity === 0) {
-      setCartItems(prev => prev.filter(item => item.id !== productId))
-    } else {
-      setCartItems(prev =>
-        prev.map(item =>
-          item.id === productId ? { ...item, quantity: newQuantity } : item
-        )
-      )
-    }
-  }
-
-  function handleCheckout() {
+    setCartItems(prev => {
+      const newCart = newQuantity === 0
+        ? prev.filter(item => item.id !== productId)
+        : prev.map(item =>
+            item.id === productId ? { ...item, quantity: newQuantity } : item
+          )
+      
+      // Save to localStorage
+      localStorage.setItem('cartItems', JSON.stringify(newCart))
+      return newCart
+    })
+  }  async function handleCheckout() {
     if (!token) {
       openLoginModal()
       return
     }
     // Implement checkout logic here
-    alert('Thank you for your purchase!')
+    await showSuccessCheckout()
     setCartItems([])
+    localStorage.removeItem('cartItems') // Clear cart from localStorage
   }
 
   function toggleUserMenu() {
@@ -68,14 +75,13 @@ function App() {  const [token, setToken] = useState(null)
     setUsername('johnd')
     setPassword('m38rmF$')
     setLoginError(null)
-  }
-
-  async function handleLogin(e) {
+  }    async function handleLogin(e) {
     e.preventDefault()
     setLoginLoading(true)
     setLoginError(null)
     try {
       const token = await login(username, password)
+      localStorage.setItem('token', token)
       setToken(token)
       closeLoginModal()
     } catch (err) {
@@ -84,8 +90,9 @@ function App() {  const [token, setToken] = useState(null)
     } finally {
       setLoginLoading(false)
     }
-  }
-  function handleLogout() {
+  }  function handleLogout() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('cartItems') // Clear cart from localStorage
     setToken(null)
     setUsername('')
     setPassword('')
