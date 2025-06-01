@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginClick, onLogoutClick }) {
+export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginClick, onLogoutClick, cartItemsCount }){
   const menuRef = useRef(null)
   const [menuVisible, setMenuVisible] = useState(false)
 
@@ -24,17 +25,23 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
     setMenuVisible((prev) => !prev)
   }
 
-  return (
-    <nav className="bg-white shadow p-4 flex justify-between items-center max-w-7xl mx-auto relative">
-      <div className="text-2xl font-bold text-blue-600">SimpleMart</div>
+  return (    <nav className="bg-white shadow p-4 flex justify-between items-center max-w-7xl mx-auto relative">
+      <Link to="/" className="text-2xl font-bold text-blue-600">SimpleMart</Link>
       <div className="flex items-center space-x-6">
-        <button
-          aria-label="Cart"
-          className="relative text-gray-700 hover:text-blue-600 focus:outline-none"
-        >
-          🛒
-          {/* You can add cart item count badge here */}
-        </button>
+        {token && (
+          <Link
+            to="/cart"
+            aria-label="Cart"
+            className="relative text-gray-700 hover:text-blue-600 focus:outline-none"
+          >
+            🛒
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItemsCount}
+              </span>
+            )}
+          </Link>
+        )}
         <div className="relative" ref={menuRef}>
           <button
             aria-label="User"

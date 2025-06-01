@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Home() {
   const [products, setProducts] = useState([])
@@ -32,10 +33,10 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-      {products.map((product) => (
-        <div
+      {products.map((product) => (        <Link
+          to={`/product/${product.id}`}
           key={product.id}
-          className="bg-white rounded shadow p-4 flex flex-col"
+          className="bg-white rounded shadow p-4 flex flex-col hover:shadow-lg transition-shadow"
         >
           <img
             src={product.image}
@@ -44,7 +45,7 @@ export default function Home() {
           />
           <h3 className="font-semibold text-lg mb-2">{product.title}</h3>
           <p className="text-blue-600 font-bold text-xl">${product.price}</p>
-        </div>
+        </Link>
       ))}
     </div>
   )
