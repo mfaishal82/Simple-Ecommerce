@@ -24,9 +24,14 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
   function toggleMenu() {
     setMenuVisible((prev) => !prev)
   }
-
-  return (    <nav className="bg-white shadow p-4 flex justify-between items-center max-w-7xl mx-auto relative">
-      <Link to="/" className="text-2xl font-bold text-blue-600">SimpleMart</Link>
+  return (    <nav className="bg-[#BB1724] shadow p-4 flex justify-between items-center max-w-7xl mx-auto relative">
+      <Link 
+        to="/" 
+        className="text-2xl font-['Impact'] text-blue-300 tracking-wider"
+        style={{ letterSpacing: '0.5px' }}
+      >
+        Simple<span className='text-red-600'>MART</span>
+      </Link>
       <div className="flex items-center space-x-6">
         {token && (
           <Link

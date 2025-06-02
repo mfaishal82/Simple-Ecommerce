@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { showConfirmDelete } from '../utils/alert'
+import { createPayment } from '../services/xenditService'
 import Swal from 'sweetalert2'
 
 export default function Cart({ items, onUpdateQuantity, onCheckout }) {
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const [selectedPayment, setSelectedPayment] = useState('')
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const [selectedPayment, setSelectedPayment] = useState('');
   
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!selectedPayment) {
       Swal.fire({
         icon: 'warning',
@@ -16,7 +17,36 @@ export default function Cart({ items, onUpdateQuantity, onCheckout }) {
       })
       return
     }
-    onCheckout(selectedPayment)
+
+    try {
+      const orderData = {
+        total: total * 14000, // Convert to IDR
+        email: 'customer@example.com', // In real app, get from user profile
+        customerName: 'John Doe', // In real app, get from user profile
+      }
+
+      // Show loading state
+      const loading = Swal.fire({
+        title: 'Preparing Payment',
+        text: 'Please wait...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+
+      // Create payment and redirect to Xendit
+      await createPayment(orderData)
+      
+      // The page will be redirected to Xendit, so we don't need to call onCheckout
+    } catch (error) {
+      console.error('Checkout error:', error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Checkout Failed',
+        text: 'There was a problem processing your payment. Please try again.',
+      })
+    }
   }
 
   const handleQuantityChange = async (productId, newQuantity) => {
