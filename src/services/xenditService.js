@@ -1,6 +1,6 @@
 // WARNING: This is NOT secure for production. API keys should never be exposed in frontend code
 const API_URL = 'https://api.xendit.co';
-const XENDIT_KEY = 'xnd_development_hJ0KOiLcUiqFLxlo9WEHRWBtzlkPNMtQLF0d6LE3oV5RBTdpjOM67sP3tlqqfG';
+const XENDIT_KEY = import.meta.env.VITE_XENDIT_KEY;
 
 export const createPayment = async (orderData) => {
   try {
@@ -12,7 +12,7 @@ export const createPayment = async (orderData) => {
       external_id: `order-${Date.now()}`,
       amount: orderData.total,
       payer_email: orderData.email,
-      description: 'SimpleMart Order',      success_redirect_url: window.location.origin + '/payment-success',
+      description: 'SimpleMART Order',      success_redirect_url: window.location.origin + '/payment-success',
       failure_redirect_url: window.location.origin + '/payment-failed'
     };
 

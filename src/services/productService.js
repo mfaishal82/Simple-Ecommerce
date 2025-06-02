@@ -7,28 +7,26 @@ export async function fetchProducts(limit = 8, skip = 0, category = 'all') {
     throw new Error('Failed to fetch products')
   }
   const originalData = await res.json()
-  
-  // Filter by category if specified
-  const filteredData = category === 'all' 
-    ? originalData 
-    : originalData.filter(product => product.category === category)
+    let productsToUse = category === 'all' ? originalData : originalData.filter(product => 
+    product.category.toLowerCase() === category.toLowerCase()
+  );
 
-  // Create an array of products by repeating the filtered data
-  const allData = Array(10).fill(null).flatMap(() =>
-    filteredData.map((product, index) => ({
+  // Generate more products for infinite scroll by repeating and modifying the data
+  const repeatCount = Math.floor(skip / productsToUse.length) + 1;
+  const allData = Array(repeatCount).fill(null).flatMap((_, repeatIndex) =>    productsToUse.map((product) => ({
       ...product,
-      id: product.id + (index * 1000) + (skip * 100), // Ensure unique IDs
-      title: `${product.title} (${Math.floor(skip/8) + 1}-${index + 1})` // Add page number to title
+      id: product.id + (repeatIndex * 1000) // Make IDs unique across pages
     }))
-  )
-  
-  // Simulate pagination by slicing the data
-  const paginatedData = allData.slice(0, limit)
-  
-  // Always return hasMore as true to simulate infinite data
+  );
+
+  // Apply pagination
+  const startIndex = skip;
+  const endIndex = startIndex + limit;
+  const paginatedData = allData.slice(startIndex, endIndex);
+
   return {
     products: paginatedData,
-    hasMore: true, // Always true to simulate infinite scroll
+    hasMore: true, // Always true for infinite scroll
     total: allData.length
   }
 }

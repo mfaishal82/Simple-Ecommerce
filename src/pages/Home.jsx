@@ -3,14 +3,16 @@ import { Link } from 'react-router-dom'
 import { fetchProducts } from '../services/productService'
 import Sidebar from '../components/Sidebar'
 
-export default function Home() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [hasMore, setHasMore] = useState(true)
-  const [page, setPage] = useState(0)
-  const [selectedCategory, setSelectedCategory] = useState('all')
-  const LIMIT = 8
+export default function Home({ searchQuery }) {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const LIMIT = 8;
+  // Use normalized category in the fetchProducts call
+  const normalizedCategory = selectedCategory?.toLowerCase() || 'all'
 
   // Create refs for tracking
   const observer = useRef()
@@ -80,22 +82,39 @@ export default function Home() {
   if (error) {
     return <p className="text-center text-red-600">Error: {error}</p>
   }
-
   return (
-    <div className="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto p-4">
+    <div className="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto p-4 h-[calc(100vh-5rem)]">
       <Sidebar
         onSelectCategory={setSelectedCategory}
         selectedCategory={selectedCategory}
-      />
-      
-      <div className="flex-1 min-w-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product, index) => (
+      />        <div className="flex-1 min-w-0 overflow-y-auto">
+        
+        {/* No Results Message */}
+        {products.length > 0 && searchQuery && !products.some(product => 
+          product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        ) && (
+          <div className="text-center py-8">
+            <p className="text-gray-500">Tidak ada produk yang cocok dengan pencarian "{searchQuery}"</p>
+          </div>
+        )}        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {products
+            .filter(product => {
+              if (!searchQuery) return true;
+              const query = searchQuery.toLowerCase();
+              return (
+                product.title.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query) ||
+                (product.description?.toLowerCase() || '').includes(query)
+              );
+            })
+            .map((product, index) => (
             <Link
               to={`/product/${product.id}`}
               key={product.id}
               ref={index === products.length - 1 ? lastProductElementRef : null}
-              className="bg-white rounded shadow p-4 flex flex-col hover:shadow-lg transition-shadow"
+              className="bg-white hover:border hover:border-b-4 hover:border-red-500 rounded shadow p-4 flex flex-col hover:shadow-lg transition-shadow"
             >
               <img
                 src={product.image}

@@ -6,9 +6,12 @@ import Home from './pages/Home'
 import ProductDetail from './pages/ProductDetail'
 import { showSuccessCheckout, showLoginRequired } from './utils/alert'
 import Cart from './pages/Cart'
+import PaymentSuccess from './pages/PaymentSuccess'
+import PaymentFailed from './pages/PaymentFailed'
 import ProtectedRoute from './components/ProtectedRoute'
 import Modal from './components/Modal'
 import { login } from './services/authService'
+import Footer from './components/Footer'
 import './App.css'
 
 function App() {
@@ -19,6 +22,7 @@ function App() {
   const [password, setPassword] = useState('m38rmF$')
   const [loginError, setLoginError] = useState(null)
   const [loginLoading, setLoginLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('cartItems')
     return savedCart ? JSON.parse(savedCart) : []
@@ -99,17 +103,17 @@ function App() {
     setLoginError(null)
     setShowUserMenu(false)
     setCartItems([]) // Clear cart items on logout
-  }
-  return (
+  }  return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen flex flex-col">
         <Navbar
           token={token}
-          onUserIconClick={toggleUserMenu}
           showUserMenu={showUserMenu}
-          onLoginClick={openLoginModal}
+          onUserIconClick={() => setShowUserMenu(!showUserMenu)}
+          onLoginClick={() => setShowLoginModal(true)}
           onLogoutClick={handleLogout}
           cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+          onSearch={setSearchQuery}
         />
         {showLoginModal && (
           <Modal onClose={closeLoginModal}>
@@ -122,12 +126,19 @@ function App() {
               loading={loginLoading}
               error={loginError}
             />
-          </Modal>
-        )}
-        <main className="p-4">
+          </Modal>        )}
+        <main className="flex-1">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route              path="/product/:id"
+            <Route
+              path="/"
+              element={<Home searchQuery={searchQuery} />}
+            />
+            <Route 
+              path="/payment-success" 
+              element={<PaymentSuccess setCartItems={setCartItems} />} 
+            />
+            <Route path="/payment-failed" element={<PaymentFailed />} />
+            <Route path="/product/:id"
               element={
                 <ProductDetail
                   onAddToCart={handleAddToCart}
@@ -150,9 +161,9 @@ function App() {
                   />
                 </ProtectedRoute>
               }
-            />
-          </Routes>
+            />          </Routes>
         </main>
+        <Footer />
       </div>
     </BrowserRouter>
   )
