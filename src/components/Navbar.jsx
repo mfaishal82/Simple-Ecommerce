@@ -8,6 +8,24 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const navigate = useNavigate()
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuVisible(false)
+      }
+    }
+
+    // Add event listener only when menu is visible
+    if (menuVisible) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuVisible])
+
   // Debounce search
   useEffect(() => {
     const timeoutId = setTimeout(() => {

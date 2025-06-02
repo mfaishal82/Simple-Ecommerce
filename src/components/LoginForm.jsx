@@ -13,6 +13,14 @@ export default function LoginForm({
       className="max-w-sm mx-auto bg-white p-4 rounded shadow mt-4"
     >
       <h2 className="text-xl font-semibold mb-4 text-center">Login</h2>
+      
+      {/* Helper Text */}
+      <div className="mb-4 p-3 bg-blue-50 text-blue-800 rounded text-sm">
+        <p className="font-medium mb-1">Demo Credentials:</p>
+        <p>Username: johnd</p>
+        <p>Password: m38rmF$</p>
+      </div>
+
       <div className="mb-3">
         <label htmlFor="username" className="block mb-1 font-medium">
           Username
@@ -23,6 +31,7 @@ export default function LoginForm({
           value={username}
           onChange={onUsernameChange}
           className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter username (not email)"
           required
         />
       </div>
