@@ -12,6 +12,8 @@ This is a frontend-only implementation that leverages existing third-party APIs 
 - 💳 Secure payment integration with Xendit
 - 👤 User authentication
 - 📱 Fully responsive design
+- 🗺️ Interactive maps for location display
+- 📍 Geolocation with custom markers
 
 ## Architecture Overview
 
@@ -32,6 +34,14 @@ This project is structured as a frontend-only application:
 - React 18
 - Vite
 - TailwindCSS
+
+### Maps & Location
+- `leaflet` - Open-source maps library
+- `react-leaflet` - React components for Leaflet maps
+  - Interactive maps
+  - Location markers
+  - Custom popups
+  - Responsive map controls
 
 ### APIs Used
 

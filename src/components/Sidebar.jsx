@@ -46,7 +46,7 @@ export default function Sidebar({ onSelectCategory, selectedCategory }) {
           ✕
         </button>
         <div className="p-4">
-          <h2 className="text-xl font-bold mb-4 mt-14">Categories</h2>
+          <h2 className="text-xl font-bold mb-4 mt-6 max-sm:mt-14">Categories</h2>
           <ul className="space-y-2">
             <li>
               <button

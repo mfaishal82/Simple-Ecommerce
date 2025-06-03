@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginClick, onLogoutClick, cartItemsCount, onSearch }) {
+export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginClick, onLogoutClick, cartItemsCount, onSearch }){
   const menuRef = useRef(null)
   const [menuVisible, setMenuVisible] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -84,10 +84,11 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
           </a>
 
           <div className="flex items-center space-x-4 md:space-x-6">
-            {/* Desktop Search */}
-            <form onSubmit={handleSearchSubmit} className="hidden md:block relative">
+            {/* Desktop Search */}            <form onSubmit={handleSearchSubmit} className="hidden md:block relative">
               <input
                 type="text"
+                id="desktop-search"
+                name="desktop-search"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -223,9 +224,10 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
           }`}
         >
           <div className="px-4 py-2">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <input
+            <form onSubmit={handleSearchSubmit} className="relative">              <input
                 type="text"
+                id="mobile-search"
+                name="mobile-search"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
