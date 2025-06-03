@@ -26,7 +26,17 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
     }
   }, [menuVisible])
 
-  // Debounce search
+  // Handle search submit
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      onSearch(searchQuery.trim())
+      navigate('/')
+      setIsSearchVisible(false)
+    }
+  }
+
+  // Debounce search for real-time filtering
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       onSearch && onSearch(searchQuery)
@@ -39,12 +49,19 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
     setIsSearchVisible(false)
   }, [navigate])
 
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact-section')
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <>
       <div className="bg-[#BB1724] sticky top-0 z-50">
         <nav className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link 
-            to="/" 
+          <a href='/' 
+            // to="/" 
             className="text-2xl font-['Impact'] text-blue-500 tracking-wider"
             style={{ 
               letterSpacing: '0.5px',
@@ -57,11 +74,11 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
             }}
           >
             Simple<span className='text-red-600'>MART</span>
-          </Link>
+          </a>
 
           <div className="flex items-center space-x-4 md:space-x-6">
             {/* Desktop Search */}
-            <div className="hidden md:block relative">
+            <form onSubmit={handleSearchSubmit} className="hidden md:block relative">
               <input
                 type="text"
                 placeholder="Search products..."
@@ -74,7 +91,7 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-            </div>
+            </form>
 
             {/* Mobile Search Icon */}
             <button 
@@ -85,6 +102,34 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+            </button>
+
+            {/* Contact Icon Options - Uncomment the one you prefer */}
+            <button
+              onClick={scrollToContact}
+              className="text-white hover:text-gray-200 focus:outline-none cursor-pointer"
+              aria-label="Contact"
+            >
+              {/* Option 1: Phone icon - Good for direct contact representation */}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+
+              {/* Option 2: Support/Chat icon - Modern customer service look */}
+              {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg> */}
+
+              {/* Option 3: Question/Help icon - Good for support/FAQ context */}
+              {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg> */}
+
+              {/* Option 4: Location/Address icon - Good if focusing on physical location */}
+              {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg> */}
             </button>
 
             {token && (
@@ -110,7 +155,7 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
               <button
                 aria-label="User"
                 onClick={() => setMenuVisible(!menuVisible)}
-                className="text-white hover:text-gray-200 focus:outline-none"
+                className="text-white hover:text-gray-200 focus:outline-none cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -155,7 +200,7 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
           }`}
         >
           <div className="px-4 py-2">
-            <div className="relative">
+            <form onSubmit={handleSearchSubmit} className="relative">
               <input
                 type="text"
                 placeholder="Search products..."
@@ -168,7 +213,7 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

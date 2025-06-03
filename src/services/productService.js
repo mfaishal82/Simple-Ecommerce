@@ -30,3 +30,23 @@ export async function fetchProducts(limit = 8, skip = 0, category = 'all') {
     total: allData.length
   }
 }
+
+export async function searchProducts(query) {
+  try {
+    const res = await fetch('https://fakestoreapi.com/products')
+    const data = await res.json()
+    
+    // Filter products by title match
+    const filteredProducts = data.filter(product => 
+      product.title.toLowerCase().includes(query.toLowerCase())
+    )
+    
+    return {
+      products: filteredProducts,
+      hasMore: false
+    }
+  } catch (error) {
+    console.error('Error searching products:', error)
+    throw error
+  }
+}

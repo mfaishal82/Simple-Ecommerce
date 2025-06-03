@@ -42,12 +42,12 @@ export default function Sidebar({ onSelectCategory, selectedCategory }) {
         {/* Close button for mobile */}
         <button
           onClick={() => setIsOpen(false)}
-          className="lg:hidden absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          className="lg:hidden absolute top-20 right-2 text-gray-500 hover:text-gray-700"
         >
           ✕
         </button>
         <div className="p-4">
-          <h2 className="text-xl font-bold mb-4">Categories</h2>
+          <h2 className="text-xl font-bold mb-4 mt-14">Categories</h2>
           <ul className="space-y-2">
             <li>
               <button

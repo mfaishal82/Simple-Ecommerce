@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import useStore from '../store/useStore';
 
-export default function PaymentSuccess({ setCartItems }) {  useEffect(() => {
-    // Clear cart items and localStorage
-    setCartItems([]);
-    localStorage.removeItem('cartItems');
+export default function PaymentSuccess() {
+  const clearCart = useStore(state => state.clearCart)
+
+  useEffect(() => {
+    // Clear cart items
+    clearCart()
     
     // Trigger confetti effect when component mounts
     const duration = 3 * 1000;
@@ -24,7 +27,6 @@ export default function PaymentSuccess({ setCartItems }) {  useEffect(() => {
 
       const particleCount = 50 * (timeLeft / duration);
       
-      // since particles fall down, start a bit higher than random
       confetti({
         particleCount,
         startVelocity: 30,
@@ -37,7 +39,7 @@ export default function PaymentSuccess({ setCartItems }) {  useEffect(() => {
     }, 250);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [clearCart]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

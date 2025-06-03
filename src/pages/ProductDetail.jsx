@@ -2,27 +2,27 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { showLoginRequired } from '../utils/alert'
+import useStore from '../store/useStore'
 
-export default function ProductDetail({ onAddToCart, isAuthenticated, onLoginRequired }) {
+export default function ProductDetail({ isAuthenticated, onLoginRequired }) {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const addToCart = useStore(state => state.addToCart)
 
   useEffect(() => {
     async function fetchProduct() {
       try {
         setLoading(true)
-        // Get original ID by removing the modifications we added
-        const originalId = (id % 1000) % 20 || 20 // Reset to original ID (1-20)
+        const originalId = (id % 1000) % 20 || 20
         const res = await fetch(`https://fakestoreapi.com/products/${originalId}`)
         if (!res.ok) throw new Error('Failed to fetch product')
         const data = await res.json()
-        // Keep the modified title from the list view
         const modifiedProduct = {
           ...data,
-          id: parseInt(id), // Keep the modified ID for cart consistency
-          title: document.referrer.includes('/') ? data.title : data.title // Keep original title for direct access
+          id: parseInt(id),
+          title: document.referrer.includes('/') ? data.title : data.title
         }
         setProduct(modifiedProduct)
       } catch (err) {
@@ -33,13 +33,14 @@ export default function ProductDetail({ onAddToCart, isAuthenticated, onLoginReq
     }
     fetchProduct()
   }, [id])
+
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
       await showLoginRequired()
       onLoginRequired()
       return
     }
-    onAddToCart(product)
+    addToCart(product)
     await Swal.fire({
       position: 'top-end',
       icon: 'success',

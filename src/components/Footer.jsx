@@ -3,20 +3,19 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   return (
     <footer className="bg-[#BB1724] text-white">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">          {/* About Section */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* About Section */}
           <div>
-            <h3 className="text-xl font-bold mb-4">About SimpleMART</h3>
+            <h3 className="text-lg font-semibold mb-3">About SimpleMART</h3>
             <p className="text-gray-200 text-sm">
               SimpleMART is an e-commerce platform providing high-quality products
               at the best prices. We are committed to delivering a secure and
               seamless online shopping experience.
             </p>
-          </div>
-
-          {/* Quick Links */}
+          </div>          {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/" className="text-gray-200 hover:text-white">
@@ -29,16 +28,14 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#categories" className="text-gray-200 hover:text-white">
+                <a href="/#categories" className="text-gray-200 hover:text-white">
                   Categories
                 </a>
               </li>
             </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Contact Us</h3>
+          </div>          {/* Contact Info */}
+          <div id="contact-section">
+            <h3 className="text-lg font-semibold mb-3">Contact Us</h3>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <span>📍</span>
@@ -63,7 +60,7 @@ export default function Footer() {
 
           {/* Payment Methods */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Payment Methods</h3>
+            <h3 className="text-lg font-semibold mb-3">Payment Methods</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="bg-white/10 px-3 py-2 rounded">QRIS</div>
               <div className="bg-white/10 px-3 py-2 rounded">GoPay</div>
@@ -71,10 +68,8 @@ export default function Footer() {
               <div className="bg-white/10 px-3 py-2 rounded">Bank Transfer</div>
             </div>
           </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-white/10 text-center text-sm text-gray-300">
+        </div>        {/* Bottom Bar */}
+        <div className="mt-8 pt-6 border-t border-white/10 text-center text-sm text-gray-300">
           <p>© {new Date().getFullYear()} SimpleMART. All rights reserved.</p>
           <div className="mt-2 space-x-4">
             <a href="#privacy" className="hover:text-white">Privacy Policy</a>
