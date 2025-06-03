@@ -19,7 +19,7 @@ export default function PaymentFailed() {
           <div className="space-y-4">
             <Link
               to="/cart"
-              className="w-full inline-flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150"
+              className="w-full inline-flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150 cursor-pointer"
             >
               Return to Cart
             </Link>

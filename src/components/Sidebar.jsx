@@ -39,10 +39,9 @@ export default function Sidebar({ onSelectCategory, selectedCategory }) {
         } transition-transform duration-300 ease-in-out z-40`}
         id='categories'
       >
-        {/* Close button for mobile */}
-        <button
+        {/* Close button for mobile */}        <button
           onClick={() => setIsOpen(false)}
-          className="lg:hidden absolute top-20 right-2 text-gray-500 hover:text-gray-700"
+          className="lg:hidden absolute top-20 right-2 text-gray-500 hover:text-gray-700 cursor-pointer"
         >
           ✕
         </button>
@@ -55,7 +54,7 @@ export default function Sidebar({ onSelectCategory, selectedCategory }) {
                   onSelectCategory('all')
                   setIsOpen(false)
                 }}
-                className={`w-full text-left px-4 py-2 rounded hover:bg-gray-100 ${
+                className={`w-full text-left px-4 py-2 rounded cursor-pointer hover:bg-gray-100 ${
                   !selectedCategory || selectedCategory === 'all'
                     ? 'bg-blue-100 text-blue-600'
                     : ''
@@ -71,7 +70,7 @@ export default function Sidebar({ onSelectCategory, selectedCategory }) {
                     onSelectCategory(category.toLowerCase())
                     setIsOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2 rounded hover:bg-gray-100 ${
+                  className={`w-full text-left px-4 py-2 rounded cursor-pointer hover:bg-gray-100 ${
                     selectedCategory === category
                       ? 'bg-blue-100 text-blue-600'
                       : ''

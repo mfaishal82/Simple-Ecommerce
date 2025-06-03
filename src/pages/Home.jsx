@@ -138,7 +138,7 @@ const Home = forwardRef((props, ref) => {
                 to={`/product/${product.id}`}
                 key={product.id}
                 ref={index === products.length - 1 ? lastProductElementRef : null}
-                className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden"
+                className="group bg-white rounded-lg shadow-sm hover:shadow-[0_0_15px_rgba(187,23,36,0.3)] transition-all duration-200 flex flex-col overflow-hidden"
               >                <div className="relative pt-[100%] border-b-0 overflow-hidden">
                   <div className="absolute inset-0 p-4 flex items-center justify-center bg-white">
                     <img

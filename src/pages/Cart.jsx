@@ -126,7 +126,7 @@ export default function Cart() {
           <div className="flex gap-4">
             <button
               onClick={handleCheckout}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
             >
               Proceed to Checkout
             </button>
