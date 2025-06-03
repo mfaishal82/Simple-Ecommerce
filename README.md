@@ -1,8 +1,8 @@
 # SimpleMART
 
-SimpleMART is an e-commerce project built during a vibe coding session. The project focuses on creating a modern, responsive e-commerce platform with a clean user interface and smooth user experience.
+SimpleMART is an e-commerce project built with Vite + React during a vibe coding session. The project focuses on creating a modern, responsive e-commerce platform with a clean user interface and smooth user experience.
 
-This is a frontend-only implementation that leverages existing third-party APIs for backend functionality. Instead of building a custom backend, the project demonstrates integration with well-established APIs to handle data management, authentication, and payment processing.
+This is a frontend-only implementation built using Vite as the build tool and React as the UI framework, leveraging existing third-party APIs for backend functionality. Instead of building a custom backend, the project demonstrates integration with well-established APIs to handle data management, authentication, and payment processing.
 
 ## Features
 
