@@ -8,6 +8,7 @@ import ProductDetail from './pages/ProductDetail'
 import { showSuccessCheckout, showLoginRequired } from './utils/alert'
 import Cart from './pages/Cart'
 import PaymentSuccess from './pages/PaymentSuccess'
+import Profile from './pages/Profile'
 import PaymentFailed from './pages/PaymentFailed'
 import ProtectedRoute from './components/ProtectedRoute'
 import Modal from './components/Modal'
@@ -123,13 +124,23 @@ function App() {
               path="/payment-success" 
               element={<PaymentSuccess />} 
             />
-            <Route path="/payment-failed" element={<PaymentFailed />} />
-            <Route path="/product/:id"
+            <Route path="/payment-failed" element={<PaymentFailed />} />            <Route path="/product/:id"
               element={
                 <ProductDetail
                   isAuthenticated={!!token}
                   onLoginRequired={openLoginModal}
                 />
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={!!token}
+                  onLoginRequired={openLoginModal}
+                >
+                  <Profile />
+                </ProtectedRoute>
               }
             />
             <Route

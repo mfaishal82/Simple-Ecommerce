@@ -7,8 +7,7 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const navigate = useNavigate()
-
-  // Close menu when clicking outside
+  // Handle menu visibility
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -16,13 +15,21 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
       }
     }
 
-    // Add event listener only when menu is visible
+    function handleEscape(event) {
+      if (event.key === 'Escape') {
+        setMenuVisible(false)
+      }
+    }
+
+    // Add event listeners only when menu is visible
     if (menuVisible) {
       document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleEscape)
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
     }
   }, [menuVisible])
 
@@ -155,7 +162,7 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
               <button
                 aria-label="User"
                 onClick={() => setMenuVisible(!menuVisible)}
-                className="text-white hover:text-gray-200 focus:outline-none cursor-pointer"
+                className="text-white hover:text-gray-200 focus:outline-none cursor-pointer relative"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -164,28 +171,44 @@ export default function Navbar({ token, onUserIconClick, showUserMenu, onLoginCl
                   <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></span>
                 )}
               </button>
-              {menuVisible && (
-                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 rounded shadow-lg z-50">
+              {menuVisible && (                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden py-2 transform origin-top-right transition-all duration-200 ease-out">
                   {!token ? (
                     <button
                       onClick={() => {
                         setMenuVisible(false)
                         onLoginClick()
-                      }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      }}                      className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition duration-150 cursor-pointer font-medium"
                     >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                      </svg>
                       Login
                     </button>
                   ) : (
-                    <button
-                      onClick={() => {
-                        setMenuVisible(false)
-                        onLogoutClick()
-                      }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      Logout
-                    </button>
+                    <>
+                      <Link
+                        to="/profile"
+                        onClick={() => setMenuVisible(false)}
+                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition duration-150 cursor-pointer font-medium border-b border-gray-100"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Profile
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setMenuVisible(false)
+                          onLogoutClick()
+                        }}
+                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition duration-150 cursor-pointer font-medium"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                      </button>
+                    </>
                   )}
                 </div>
               )}
