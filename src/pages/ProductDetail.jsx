@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import LoadingSpinner from '../components/LoadingSpinner'
 import Swal from 'sweetalert2'
 import { showLoginRequired } from '../utils/alert'
 import useStore from '../store/useStore'
@@ -45,13 +46,18 @@ export default function ProductDetail({ isAuthenticated, onLoginRequired }) {
       position: 'top-end',
       icon: 'success',
       title: 'Added to cart!',
-      showConfirmButton: false,
+      showConfirmButton: false,      
       timer: 1500
     })
   }
 
   if (loading) {
-    return <p className="text-center text-gray-700">Loading product...</p>
+    return (
+      <div className="py-8 flex flex-col items-center">
+        <LoadingSpinner />
+        <p className="text-gray-600 mt-3">Loading product details...</p>
+      </div>
+    )
   }
 
   if (error) {

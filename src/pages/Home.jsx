@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { Link } from 'react-router-dom'
+import LoadingSpinner from '../components/LoadingSpinner'
 import { fetchProducts, searchProducts } from '../services/productService'
 import Sidebar from '../components/Sidebar'
 import useStore from '../store/useStore'
@@ -138,13 +139,12 @@ const Home = forwardRef((props, ref) => {
                 key={product.id}
                 ref={index === products.length - 1 ? lastProductElementRef : null}
                 className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden"
-              >              
-                <div className="relative pt-[100%] border-b-0">
+              >                <div className="relative pt-[100%] border-b-0 overflow-hidden">
                   <div className="absolute inset-0 p-4 flex items-center justify-center bg-white">
                     <img
                       src={product.image}
                       alt={product.title}
-                      className="max-h-full max-w-full object-contain transition-opacity duration-300 opacity-0 onload:opacity-100"
+                      className="max-h-full max-w-full object-contain transition-all duration-300 opacity-0 onload:opacity-100 group-hover:scale-110"
                       onLoad={(e) => e.target.classList.add('opacity-100')}
                     />
                   </div>
@@ -199,10 +199,10 @@ const Home = forwardRef((props, ref) => {
                 </div>
               </Link>
             ))}
-        </div>
-        {loading && (
-          <div className="col-span-full text-center py-4">
-            <p className="text-gray-600">Loading more products...</p>
+        </div>        {loading && (
+          <div className="col-span-full py-4 flex flex-col items-center">
+            <LoadingSpinner size="medium" />
+            <p className="text-gray-600 mt-2">Loading more products...</p>
           </div>
         )}
       </div>

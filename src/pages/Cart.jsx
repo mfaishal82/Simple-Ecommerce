@@ -15,41 +15,54 @@ export default function Cart() {
         total: total * 14000, // Convert to IDR
         email: 'customer@example.com', // In real app, get from user profile
         customerName: 'John Doe', // In real app, get from user profile
-      }
+      };
 
       // Show loading state
-      const loading = Swal.fire({
+      Swal.fire({
         title: 'Preparing Payment',
-        text: 'Please wait...',
+        html: `
+          <div class="flex flex-col items-center py-4">
+            <div class="relative w-12 h-12">
+              <div class="absolute inset-0 rounded-full border-[3px] border-blue-100"></div>
+              <div class="absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#BB1724] animate-[spin_1s_linear_infinite]"></div>
+              <div class="absolute inset-0 rounded-full border-[3px] border-transparent border-l-blue-600 animate-[spin_1.2s_linear_infinite_reverse]"></div>
+              <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div class="w-2 h-2 bg-blue-600 rounded-full opacity-70"></div>
+              </div>
+            </div>
+          </div>
+        `.trim(),
         allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-      })
+        showConfirmButton: false
+      });
 
       // Create payment and redirect to Xendit
-      await createPayment(orderData)
+      const result = await createPayment(orderData);
+      
+      if (!result) {
+        throw new Error('Payment creation failed');
+      }
       
     } catch (error) {
-      console.error('Checkout error:', error)
-      Swal.fire({
+      console.error('Checkout error:', error);
+      await Swal.fire({
         icon: 'error',
         title: 'Checkout Failed',
         text: 'There was a problem processing your payment. Please try again.',
-      })
+      });
     }
-  }
+  };
 
   const handleQuantityChange = async (productId, newQuantity) => {
     if (newQuantity === 0) {
-      const result = await showConfirmDelete()
+      const result = await showConfirmDelete();
       if (result.isConfirmed) {
-        updateCartQuantity(productId, 0)
+        updateCartQuantity(productId, 0);
       }
     } else {
-      updateCartQuantity(productId, newQuantity)
+      updateCartQuantity(productId, newQuantity);
     }
-  }
+  };
 
   if (cartItems.length === 0) {
     return (

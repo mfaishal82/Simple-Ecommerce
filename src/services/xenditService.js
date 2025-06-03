@@ -4,6 +4,10 @@ const XENDIT_KEY = import.meta.env.VITE_XENDIT_KEY;
 
 export const createPayment = async (orderData) => {
   try {
+    if (!XENDIT_KEY) {
+      throw new Error('Xendit API key is not configured');
+    }
+
     const headers = new Headers();
     headers.append('Authorization', 'Basic ' + btoa(XENDIT_KEY + ':'));
     headers.append('Content-Type', 'application/json');
@@ -12,7 +16,8 @@ export const createPayment = async (orderData) => {
       external_id: `order-${Date.now()}`,
       amount: orderData.total,
       payer_email: orderData.email,
-      description: 'SimpleMART Order',      success_redirect_url: window.location.origin + '/payment-success',
+      description: 'SimpleMART Order',
+      success_redirect_url: window.location.origin + '/payment-success',
       failure_redirect_url: window.location.origin + '/payment-failed'
     };
 
@@ -23,13 +28,20 @@ export const createPayment = async (orderData) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create invoice');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to create invoice');
     }
 
     const invoice = await response.json();
     
     // Redirect to Xendit Invoice page
-    window.location.href = invoice.invoice_url;    return invoice;
+    if (invoice.invoice_url) {
+      window.location.href = invoice.invoice_url;
+      return invoice;
+    } else {
+      throw new Error('Invalid invoice response from Xendit');
+    }
+    
   } catch (error) {
     console.error('Error creating Xendit payment:', error);
     throw error;
